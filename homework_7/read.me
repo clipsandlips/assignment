@@ -1,0 +1,34 @@
+docker build -t my-postgres-image .
+
+docker compose -f docker-compose.yml up
+
+
+docker-compose down
+docker-compose build
+docker-compose up -d
+
+
+password change for admin user
+using for example adminer or terminal psql
+ALTER USER marina_admin WITH PASSWORD 'mar123';
+
+
+Update config.ini
+invalid user, password (@@@ was a troublemaker could not be parsed in the URI where @ is a must...)
+wrong postgresql+psycopg2:://marina_admin:mar123@@@@localhost:5432/homework_6
+good  postgresql+psycopg2:://marina_admin:mar123@localhost:5432/homework_6
+
+
+Alembic is a lightweight database migration tool for SQLAlchemy. It provides a way to manage and apply schema changes (migrations) to your database in a consistent and controlled manner. Alembic allows you to version your database schema, which is especially useful in collaborative environments where multiple developers are working on the same project.
+
+Key Features of Alembic:
+Version Control: Track changes to the database schema over time.
+Consistency: Ensure that schema changes are applied in the correct order.
+Rollback: Ability to revert schema changes if needed.
+Integration: Works seamlessly with SQLAlchemy.
+
+
+
+pip install alembic
+
+alembic init alembic
