@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: 295bb20164bc
+Revision ID: d1c428b6e17d
 Revises: 
-Create Date: 2024-06-09 18:42:57.983103
+Create Date: 2024-06-09 20:08:25.974405
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '295bb20164bc'
+revision: str = 'd1c428b6e17d'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,7 +27,7 @@ def upgrade() -> None:
     )
     op.create_table('teachers',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('teacher__name', sa.String(), nullable=True),
+    sa.Column('teacher_name', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('students',
@@ -39,7 +39,7 @@ def upgrade() -> None:
     )
     op.create_table('subjects',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('subject__name', sa.String(), nullable=True),
+    sa.Column('subject_name', sa.String(), nullable=True),
     sa.Column('teacher_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['teacher_id'], ['teachers.id'], ),
     sa.PrimaryKeyConstraint('id')

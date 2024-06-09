@@ -1,6 +1,6 @@
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
-from sqlalchemy import Column, Numeric, String, Integer, Text, ForeignKey, DateTime
+from sqlalchemy import Column, Numeric, String, Integer, ForeignKey, DateTime
 
 Base = declarative_base()
 
@@ -10,7 +10,7 @@ class Student(Base):
     name = Column(String(20))
     group_id = Column(Integer(), ForeignKey('groups.id'))
     grades = relationship('Grade', back_populates='student')
-    groups = relationship('Group', back_populates='students')
+    group = relationship('Group', back_populates='students')
 
 
 class Grade(Base):
@@ -21,8 +21,8 @@ class Grade(Base):
     date = Column(DateTime())
     subject_id = Column(Integer(), ForeignKey('subjects.id'))
     
-    students = relationship('Student', back_populates='grades')
-    subjects = relationship('Subject', back_populates='grades')
+    student = relationship('Student', back_populates='grades')
+    subject = relationship('Subject', back_populates='grades')
 
 class Group(Base):
     __tablename__ = 'groups'
@@ -34,22 +34,20 @@ class Group(Base):
 class Subject(Base):
     __tablename__ = 'subjects'
     id = Column(Integer(), primary_key=True)
-    subject__name = Column(String())
+    subject_name = Column(String())
     teacher_id = Column(Integer(), ForeignKey('teachers.id'))
-    teachers = relationship('Teacher', back_populates='subject')
+    teacher = relationship('Teacher', back_populates='subjects')
     grades = relationship('Grade', back_populates='subject')
 
 class Teacher(Base):
     __tablename__ = 'teachers'
     id = Column(Integer(), primary_key=True)
-    teacher__name = Column(String())
+    teacher_name = Column(String())
     subjects = relationship('Subject', back_populates='teacher')
 
 
 #engine = create_engine("sqlite:///test.db")
-engine = create_engine("postgresql+psycopg2://marina_admin:mar123@localhost:5433/homework_6")
+engine = create_engine("postgresql+psycopg2://marina_admin:mar123@localhost:5433/homework_7")
 
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 session = Session()
-
-
