@@ -76,14 +76,6 @@ def main():
     # Upload JSON data to MongoDB
     upload_json_data('authors.json', 'quotes.json')
     
-    # Regular expressions for matching attributes
-    regex_patterns = {
-        'name': re.compile(r'^na(?:me)?:', re.IGNORECASE),
-        'tag': re.compile(r'^ta(?:g)?:', re.IGNORECASE),
-        'tags': re.compile(r'^tags:', re.IGNORECASE),
-        'quote': re.compile(r'^qu(?:ote)?:', re.IGNORECASE),
-    }
-    
     # Interactive search loop
     while True:
         user_input = input("Enter a search query (format: attribute:term) or 'exit' to quit: ")
@@ -92,13 +84,11 @@ def main():
         
         search_attribute = None
         search_term = None
-        
-        # Determine the search attribute using regular expressions
-        for attr, pattern in regex_patterns.items():
-            if pattern.match(user_input):
-                search_attribute = attr
-                search_term = pattern.sub('', user_input).strip()
-                break
+
+        search_attribute = user_input.split(':')[0]
+        print(search_attribute)
+        search_term = user_input.split(":")[1]
+        print(search_term)
         
         if not search_attribute:
             print("Invalid input format. Please use a valid format.")

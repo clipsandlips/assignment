@@ -1,0 +1,21 @@
+assignment 1
+
+install VSC extension : MongoDB for VS Code
+
+pip install mongoengine
+
+
+
+
+
+assignment 2
+
+pip install pika
+
+docker pull rabbitmq
+
+The -p 8080:15672 flag should map port 8080 on your host to port 15672 on the container, which is the default port for RabbitMQ management UI.
+
+
+
+docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 8080:15672 -e RABBITMQ_DEFAULT_USER=marina_adm -e RABBITMQ_DEFAULT_PASS=rabbit_qwerty rabbitmq:3-management
