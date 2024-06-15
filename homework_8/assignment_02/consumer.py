@@ -69,4 +69,4 @@ def start_consumer():
         print(f"Error connecting to RabbitMQ: {e}")
 
 if __name__ == "__main__":
-    start_consumer()
+    start_consumer() 

@@ -9,7 +9,7 @@ import time
 def read_secrets(file_path):
     with open(file_path, 'r') as file:
         return json.load(file)
-
+ 
 # Read secrets from the secrets.json file
 secrets = read_secrets('secrets.json')
 username = secrets['username']
