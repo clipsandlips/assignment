@@ -2,12 +2,11 @@
 <html>
 <head>
     <title>Main Page</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
 </head>	
 </head>
 <body>
-    <h1 class="ukrainian-blue">Welcome to the Main Page</h1>
-    <ul class="ukrainian-yellow">
+    <h1>Welcome to the Main Page</h1>
+    <ul>
         <li><a href="{% url 'admin:index' %}">Admin</a></li>
         <li><a href="{% url 'register' %}">Register</a></li>
         <li><a href="{% url 'quotes_list' %}">Quotes</a></li>
