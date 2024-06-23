@@ -1,0 +1,16 @@
+<!-- templates/quotes_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quotes List</title>
+</head>
+<body>
+    <h1>Quotes</h1>
+		<a href="{% url 'home' %}">Back to Home</a>
+    <ul>
+        {% for quote in quotes %}
+            <li>{{ quote.text }} - {{ quote.author.fullname }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

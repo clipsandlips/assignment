@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quotes</title>
+</head>
+<body>
+    {% if quotes %}
+    <h1>Top Ten Quotes</h1>
+
+    <ul>
+        {% for quote in quotes %}
+            <li>
+                {{ quote.text }} - <a href="{% url 'author-detail' quote.author.id %}">{{ quote.author.fullname }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+    {% endif %}
+
+    <h2>All Quotes</h2>
+    
+    <a href="{% url 'home' %}">Back to Home</a>
+    
+    <!-- Search Form -->
+    <form method="get" action="{% url 'search_quotes' %}">
+        {{ form.query.label_tag }}
+        {{ form.query }}
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Available Tags -->
+    <h2>Available Tags:</h2>
+    <p>
+        {% for tag in tags %}
+            <a href="{% url 'search_quotes' %}?query={{ tag }}">{{ tag }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+
+    <ul>
+        {% for quote in page_obj %}
+            <li>
+                {{ quote.text }} - <a href="{% url 'author-detail' quote.author.id %}">{{ quote.author.fullname }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <!-- Link to view top ten quotes -->
+    <p><a href="{% url 'top_ten_quotes' %}">View Top Ten Quotes</a></p>
+</body>
+</html>

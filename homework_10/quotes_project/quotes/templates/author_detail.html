@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ author.fullname }}</title>
+</head>
+<body>
+    <h1>{{ author.fullname }}</h1>
+    <p><strong>Born:</strong> {{ author.born_date }} in {{ author.born_location }}</p>
+    <p>{{ author.description }}</p>
+    <h2>Quotes</h2>
+    <ul>
+        {% for quote in quotes %}
+            <li>{{ quote.text }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'quotes_list' %}">Back to Quotes</a>
+</body>
+</html>

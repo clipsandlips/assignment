@@ -1,0 +1,17 @@
+<!-- templates/authors_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authors List</title>
+</head>
+<body>
+    <h1>Authors</h1>
+    	<a href="{% url 'home' %}">Back to Home</a>
+	<ul>
+        {% for author in authors %}
+            <li>{{ author.fullname }}</li>
+        {% endfor %}
+    </ul>
+    
+</body>
+</html>

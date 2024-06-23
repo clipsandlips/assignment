@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scrape Data Form</title>
+</head>
+<body>
+    <h1>Create Database and Scrape Data</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Database and Scrape Data</button>
+    </form>
+</body>
+</html>
