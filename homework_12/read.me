@@ -1,0 +1,23 @@
+pip install fastapi[all] python-jose[cryptography] passlib[bcrypt]
+
+python 01_create_database.py
+
+python main.py
+
+
+
+
+pip cache purge
+pip install --force-reinstall passlib bcrypt
+pip install jwt
+pip install --upgrade PyJWT
+
+uvicorn main:app --reload
+
+http://127.0.0.1:8000/docs
+
+cd .\warsztat\programming\github\assignment\homework_12\
+
+
+
+
