@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Author</title>
+</head>
+<body>
+    <h1>Add New Author</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Author</button>
+    </form>
+</body>
+</html>

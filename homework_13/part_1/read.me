@@ -1,0 +1,99 @@
+
+pip install slowapi
+pip install fastapi_limiter
+pip install fastapi-limiter fastapi[all] aiohttp python-dotenv cloudinary
+pip install fastapi fastapi-limiter sqlalchemy bcrypt jose aiohttp python-dotenv cloudinary redis
+pip install cloudinary
+pip install fastapi sqlalchemy pydantic email-validator itsdangerous aiofiles jinja2 aiosmtplib
+
+pip install aioredis
+pip install --upgrade aioredis asyncio
+
+
+pip install --upgrade asyncio
+
+install redis...
+https://cloudinary.com/
+docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
+
+
+docker-compose up -d
+
+python 01_create_database.py
+
+python main.py
+
+uvicorn main:app --reload
+
+http://127.0.0.1:8000/docs
+
+
+
+fixing airoredis duplicates
+pip show aioredis
+manual fix of Timeout exception - change not to inherit from different libs only from one Exception
+
+
+
+
+Zadanie domowe nr 13
+
+
+
+
+
+Część pierwsza
+
+
+
+W tym zadaniu domowym kontynuujemy udoskonalanie aplikacji REST API z zadania domowego 12.
+
+
+
+Zadania.
+
+
+
+Zaimplementuj mechanizm weryfikacji adresu e-mail 
+zarejestrowanego użytkownika;
+Ogranicz liczbę żądań do tras kontaktów. Pamiętaj, 
+aby ograniczyć szybkość tworzenia kontaktów dla użytkownika;
+
+Włącz CORS dla interfejsu API REST;
+
+Zaimplementuj możliwość aktualizacji awatara użytkownika. 
+Użyj usługi Cloudinary;
+
+
+Wymagania ogólne
+
+
+
+Wszystkie zmienne środowiskowe powinny być przechowywane w pliku .env. W kodzie nie powinny znajdować się żadne wrażliwe dane w "czystej" postaci;
+Docker Compose jest używany do uruchamiania wszystkich usług i baz danych w aplikacji;
+
+
+Dodatkowe zadanie
+
+
+
+Wdrożenie mechanizmu buforowania przy użyciu bazy danych Redis. Buforowanie bieżącego użytkownika podczas autoryzacji;
+Wdrożenie mechanizmu resetowania hasła dla aplikacji REST API;
+
+
+
+
+Druga część
+
+
+
+W tym zadaniu domowym musisz zmodyfikować aplikację Django z zadania domowego 10.
+
+
+
+Zadanie.
+
+
+
+Zaimplementuj mechanizm resetowania hasła dla zarejestrowanego użytkownika;
+Wszystkie zmienne środowiskowe powinny być przechowywane w pliku .env i używane w pliku settings.py.
