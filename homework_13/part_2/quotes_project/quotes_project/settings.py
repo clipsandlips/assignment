@@ -13,8 +13,21 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 import logging
+import sys
+import os
 
-from settings import settings
+# Determine the path to the outer directory
+outer_package_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+#outer_package_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+print(outer_package_path)
+
+# Add the outer directory to the sys.path
+if outer_package_path not in sys.path:
+    sys.path.append(outer_package_path)
+
+from setting import setting
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -97,9 +110,9 @@ WSGI_APPLICATION = 'quotes_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'homework_10',
-        'USER': 'marina_admin',
-        'PASSWORD': 'mar123',
+        'NAME': setting.postgres_db_name, #'homework_10',
+        'USER': setting.postgres_user, 
+        'PASSWORD': setting.postgres_password,
         'HOST': 'localhost',
         'PORT': '5433',
     }
@@ -148,11 +161,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-EMAIL_BACKEND = settings. 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.yahoo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'clipsandlips2@yahoo.com'
-EMAIL_HOST_PASSWORD = 'ygtgpwcontzocdln'
+EMAIL_HOST_USER = setting.email_host_user 
+EMAIL_HOST_PASSWORD = setting.email_host_password 
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

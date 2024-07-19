@@ -24,6 +24,8 @@ from contextlib import asynccontextmanager
 import logging
 
 from settings import settings
+import email_utils
+import auth
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -180,6 +182,9 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=409, detail="Email already registered")
     
+    print('test555')
+    print(user)
+    print(user.email)
     new_db_user = crud.create_user(db=db, user=user)
 
     token = crud.generate_verification_token(user.email)
@@ -269,14 +274,19 @@ async def upload_avatar(file: UploadFile = File(...), db: Session = Depends(get_
 
 @app.get("/verify-email/")
 async def verify_email(token: str, db: Session = Depends(get_db)):
-    try:
-        email = email_utils.confirm_token(token)
-    except:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired token")
-    
-    user = crud.verify_user_email(db, email)
-    return {"message": "Email verified successfully"}
-
+#    try:
+#        email = email_utils.confirm_token(token)
+#    except:
+#        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired token")
+#    
+#    user = crud.verify_user_email(db, email)
+#    return {"message": "Email verified successfully"}
+    username = auth.extract_username_from_token(token)
+    user = crud.get_user_by_username(db, username)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    # Perform the verification process
+    return {"msg": "Email verified successfully"}
 
 
 if __name__ == "__main__":

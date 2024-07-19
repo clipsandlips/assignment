@@ -14,8 +14,8 @@ cd quotes_project
 # create django App
 python manage.py startapp quotes
 
-python ./quotes_project/manage.py makemigrations
-python ./quotes_project/manage.py migrate
+python manage.py makemigrations
+python manage.py migrate
 
 # create admin user
 python ./quotes_project/manage.py createsuperuser
@@ -25,3 +25,4 @@ python 03_fill_out_tables.py
 
 python ./quotes_project/manage.py runserver
 
+python manage.py runserver

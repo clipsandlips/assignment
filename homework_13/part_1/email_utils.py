@@ -5,23 +5,27 @@ from email.message import EmailMessage
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import configparser
 
+from settings import settings
+import jwt
+from fastapi import HTTPException
 
 # Load configuration from config.ini file
-file_config = 'secrets.ini'
-config = configparser.ConfigParser()
-config.read(file_config)
+#file_config = 'db_psql_config.ini'
+#config = configparser.ConfigParser()
+#config.read(file_config)
 
-sections = config.sections()
-print(f"Sections found: {sections}")
+#sections = config.sections()
+#print(f"Sections found: {sections}")
 
-if 'SMTP' in sections:
-    smtp_username = config.get('SMTP', 'SMTP_USERNAME') 
-    smtp_password = config.get('SMTP', 'SMTP_PASSWORD')
-    smtp_hostname = config.get('SMTP', 'SMTP_HOSTNAME')
+if hasattr(settings, "smtp_username") and hasattr(settings, "smtp_password") and \
+   hasattr(settings, "smtp_hostname") :
+    smtp_username = settings.smtp_username 
+    smtp_password = settings.smtp_password
+    smtp_hostname = settings.smtp_hostname
     
-if 'HASH' in sections:
-    SECRET_KEY = config.get('HASH', 'HASH_SECRET_KEY')  
-    SALT = config.get('HASH', 'HASH_SALT')
+if hasattr(settings, "hash_secret_key") and hasattr(settings, "hash_salt") : 
+    SECRET_KEY = settings.hash_secret_key   #configs.get('HASH', 'HASH_SECRET_KEY')  
+    SALT = settings.hash_salt               #config.get('HASH', 'HASH_SALT')
 
 
 def generate_confirmation_token(email: str):
@@ -43,6 +47,10 @@ async def send_email(subject: str, recipient: str, html_content: str):
     message["Subject"] = subject
     message.set_content(html_content, subtype="html")
 
+    print(smtp_hostname)
+    print(smtp_username)
+    print(smtp_password)
+
     await aiosmtplib.send(
         message,
         hostname= smtp_hostname,
@@ -61,3 +69,4 @@ async def send_verification_email(email: str, token: str):
     verification_url = f"http://127.0.0.1:8000/verify-email?token={token}"
     html_content = template.render(verification_url=verification_url)
     await send_email("Email Verification", email, html_content)
+

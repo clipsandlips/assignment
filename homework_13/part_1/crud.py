@@ -67,6 +67,10 @@ def delete_contact(db: Session, contact_id: int, user_id: int):
 
 
 def verify_user_email(db: Session, email: str):
+
+    print('session : {}'.format(db))
+    print('email : {}'.format(email))
+
     user = get_user_by_email(db, email)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
