@@ -1,12 +1,22 @@
 import sys
 import os
+import logging
 
 # Adjust the sys.path to include the backend/src directory
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'backend', 'src')))
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Boolean, UniqueConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, Boolean, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
 from util.database import Base
+
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Log table creation attempts
+logger.info("Defining models and their relationships.")
+
 
 # Define the many-to-many relationship table
 photo_tag = Table(
@@ -19,19 +29,21 @@ photo_tag = Table(
 
 class User(Base):
     __tablename__ = "users"
-    __table_args__ = (
-        UniqueConstraint('email', name='uq_users_email'),
-        {'extend_existing': True}
-    )
 
-    id = Column(Integer, primary_key=True, index=True)
+    #id = Column(Integer)
+    id = Column(Integer, primary_key=True)
     email = Column(String)
     hashed_password = Column(String)
     disabled = Column(Boolean, default=False)
     role = Column(String)
 
-    photos = relationship("Photo", back_populates="owner")
+    #photos = relationship("Photo", back_populates="owner")
 
+    __table_args__ = (
+        Index('ix_users_id', 'id', unique=True, postgresql_if_not_exists=True),
+        UniqueConstraint('email', name='uq_users_email'),
+        {'extend_existing': True}
+    )
 
 
 class Photo(Base):

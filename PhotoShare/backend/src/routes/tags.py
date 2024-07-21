@@ -30,3 +30,4 @@ async def create_tag(tag: schemas.TagCreate, db: Session = Depends(get_db)):
 
     # Create and add the new tag to the database
     return crud.create_tag(db=db, tag=tag)
+

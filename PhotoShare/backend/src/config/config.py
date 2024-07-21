@@ -21,8 +21,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 
 
-print('test')
-print(os.path.join(os.path.dirname(__file__)))
+#print('test')
+#print(os.path.join(os.path.dirname(__file__)))
           
 class Settings(BaseSettings):
     DATABASE_URL: str
@@ -50,7 +50,7 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-print("Loaded settings:", settings.model_dump())  # This will print all settings
+#print("Loaded settings:", settings.model_dump())  # This will print all settings
 
 
 
