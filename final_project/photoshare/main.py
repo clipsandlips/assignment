@@ -20,7 +20,7 @@ cloudinary.config(
 )
 
 
-models.Base.metadata.drop_all(bind=engine)
+#models.Base.metadata.drop_all(bind=engine)
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()

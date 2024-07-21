@@ -54,3 +54,43 @@ def create_tag(db: Session, tag: schemas.TagCreate):
     db.commit()
     db.refresh(db_tag)
     return db_tag
+
+
+
+def create_photo(db: Session, photo: schemas.PhotoCreate, user_id: int):
+    print('create_photo')
+    db_photo = models.Photo(
+        url=photo.url,
+        description=photo.description,
+        owner_id=user_id
+    )
+    db.add(db_photo)
+    db.commit()
+    db.refresh(db_photo)
+
+    print('commit test')
+
+    print(photo.tags)
+
+    for tag_create in photo.tags or []:
+        tag_name = tag_create.name  # Access the tag name from TagCreate
+        db_tag = db.query(models.Tag).filter(models.Tag.name == tag_name).first()
+        if not db_tag:
+            db_tag = models.Tag(name=tag_name)
+            db.add(db_tag)
+            db.commit()
+            db.refresh(db_tag)
+        db_photo.tags.append(db_tag)
+        db.commit()
+
+    # Return a response model with tag names
+    response_photo = schemas.Photo(
+        id=db_photo.id,
+        url=db_photo.url,
+        description=db_photo.description,
+        owner_id=db_photo.owner_id,
+        tags=[tag.name for tag in db_photo.tags]
+    )
+
+    print('crate_photo completed')
+    return response_photo
