@@ -31,10 +31,10 @@ Base.metadata.create_all(bind=engine)
 # Include API routers
 #app.include_router(auth.router, prefix="/auth", tags=["auth"])
 #app.include_router(user.router)
-app.include_router(user.router, prefix="/users", tags=["users"])
-app.include_router(photo.router, prefix="/photos", tags=["photos"])
-app.include_router(comment.router, prefix="/comments", tags=["comments"])
-app.include_router(tag.router, prefix="/tags", tags=["tags"])
+app.include_router(user.router, prefix="", tags=["users"])
+app.include_router(photo.router, prefix="", tags=["photos"])
+app.include_router(comment.router, prefix="", tags=["comments"])
+app.include_router(tag.router, prefix="", tags=["tags"])
 #app.include_router(rating.router, prefix="/ratings", tags=["ratings"])
 
 
@@ -44,6 +44,6 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
+    debug_mode = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=debug_mode)
 
