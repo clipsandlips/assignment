@@ -26,6 +26,8 @@ services:
       - .:/code
     ports:
       - "8000:8000"
+    env_file:
+    - /path/to/config/.env 
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - SECRET_KEY=${JWT_SECRET_KEY}

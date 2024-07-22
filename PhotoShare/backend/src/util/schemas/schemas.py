@@ -10,33 +10,6 @@ class TokenData(BaseModel):
     email: Optional[str] = None        
 
 
-class UserBase(BaseModel):
-    email: str
-
-class UserCreate(UserBase):
-    password: str
-    role: str
-
-class User(UserBase):
-    id: int
-
-    class Config:
-        from_attributes = True #orm_mode = True
-
-class PhotoBase(BaseModel):
-    description: Optional[str] = None
-
-class PhotoCreate(PhotoBase):
-    tags: Optional[List[str]] = None
-
-class Photo(PhotoBase):
-    id: int
-    url: str
-    owner_id: int
-    tags: List[str] = []
-
-    class Config:
-        from_attributes = True #orm_mode = True
 
 class TagBase(BaseModel):
     name: str
@@ -53,6 +26,41 @@ class Tag(TagBase):
 
     class Config:
         from_attributes = True #orm_mode = True
+
+
+class UserBase(BaseModel):
+    email: str
+
+class UserCreate(UserBase):
+    password: str
+    role: str
+
+class User(UserBase):
+    id: int
+
+    class Config:
+        from_attributes = True #orm_mode = True
+
+class PhotoBase(BaseModel):
+    url: str
+    description: Optional[str] = None
+
+
+
+
+
+class PhotoCreate(PhotoBase):
+    tags: Optional[List[TagCreate]] = None
+
+class Photo(PhotoBase):
+    id: int
+    url: str
+    owner_id: int
+    tags: List[str] = []
+
+    class Config:
+        from_attributes = True #orm_mode = True
+
 
 class TransformedImageBase(BaseModel):
     original_photo_id: int

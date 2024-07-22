@@ -1,31 +1,15 @@
-#from pydantic import BaseSettings
-#from dotenv import load_dotenv
-#from pydantic_settings import BaseSettings, SettingsConfigDict
-#import os, sys
-
-# Determine the path to the outer directory
-#outer_package_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-#outer_package_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-#print(outer_package_path)
-
-# Add the outer directory to the sys.path
-#if outer_package_path not in sys.path:
-#    sys.path.append(outer_package_path)
-
-#from setting import setting
-
-
-#load_dotenv()
-
-from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
+#from pydantic import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-#print('test')
-#print(os.path.join(os.path.dirname(__file__)))
-          
 class Settings(BaseSettings):
-    DATABASE_URL: str
+    PROJECT_NAME: str = "PhotoShare"
+    #SECRET_KEY: str = os.getenv("SECRET_KEY", "your_secret_key")
+    #ALGORITHM: str = "HS256"
+    #ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/dbname")
     DATABASE_USER: str
     DATABASE_PASSWORD: str
     DATABASE_DB_NAME: str
@@ -41,12 +25,8 @@ class Settings(BaseSettings):
     CLOUDINARY_API_SECRET: str
     CLOUDINARY_API_URL: str
 
-    DEBUG: bool
-
     model_config = SettingsConfigDict(env_file=os.path.join(os.path.dirname(__file__), '.env'))
 
-
-    #model_config = SettingsConfigDict(env_file=".env")
 
 settings = Settings()
 
