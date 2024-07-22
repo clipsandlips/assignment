@@ -1,10 +1,12 @@
 import sys
 import os
 
+#from backend.src.routes import ddddauth
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 
 from fastapi import FastAPI
-from src.routes import auth, user, photo, comment, tag, rating
+from src.routes import user, photo, comment, tag, rating
 from src.util.db import engine  #, Base
 #from src.util.models import models
 from src.util.models.models import Base
@@ -28,8 +30,8 @@ Base.metadata.create_all(bind=engine)
 
 # Include API routers
 #app.include_router(auth.router, prefix="/auth", tags=["auth"])
+#app.include_router(user.router)
 app.include_router(user.router, prefix="/users", tags=["users"])
-#app.include_router(user.router, tags=["users"])
 app.include_router(photo.router, prefix="/photos", tags=["photos"])
 app.include_router(comment.router, prefix="/comments", tags=["comments"])
 app.include_router(tag.router, prefix="/tags", tags=["tags"])
