@@ -5,11 +5,11 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from backend.src.util.schemas import schemas
+from backend.src.util.schemas import user
 from backend.src.util.db import SessionLocal
 from backend.src.config.config import settings
 from typing import Optional
-from backend.src.util.crud import crud
+from backend.src.util.crud import user
 from backend.src.util.models import models
 
 SECRET_KEY = settings.JWT_SECRET_KEY
@@ -39,7 +39,7 @@ def get_password_hash(password):
 
 def authenticate_user(db: Session, email: str, password: str):
     print('authenticate_user')
-    user = crud.get_user_by_email(db, email)
+    user = user.get_user_by_email(db, email)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -70,13 +70,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
-        token_data = schemas.TokenData(email=email)
+        token_data = user.TokenData(email=email)
         print('token : {}'.format(token_data))
 
     except JWTError:
         raise credentials_exception
     
-    user = crud.get_user_by_email(db, email=token_data.email)
+    user = user.get_user_by_email(db, email=token_data.email)
     print(user.email)
 
     if user is None:

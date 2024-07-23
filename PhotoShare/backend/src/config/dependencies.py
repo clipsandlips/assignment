@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from backend.src.util.models import models
-from backend.src.config.auth import get_current_active_user
+#from backend.src.config.auth import get_current_active_user
+from backend.src.config.security import get_current_active_user
 
 async def get_current_admin(current_user: models.User = Depends(get_current_active_user)):
     print('current_user.role : {}'.format(current_user.role))

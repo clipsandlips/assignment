@@ -18,3 +18,12 @@ PhotoShare is a photo-sharing application built with FastAPI. It allows users to
 3. Set up the database (PostgreSQL is recommended)
 4. Configure environment variables
 5. Run the application: `uvicorn backend.main:app --reload`
+
+
+python -m venv photoshare_new
+cd photoshare_new
+.\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+
+docker-compose up -d
