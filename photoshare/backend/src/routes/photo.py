@@ -1,9 +1,8 @@
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy.orm import Session
-from backend.src.util.schemas import photo as schema_photo, user, tag as schema_tag
-from backend.src.util.models import models
+from backend.src.util.schemas import photo as schema_photo, user as schema_user, tag as schema_tag
+from backend.src.util.models import photo as model_photo, user as model_user
 from backend.src.util.crud import photo as crud_photo
-#from backend.src.config.auth import get_db, get_current_active_user
 from backend.src.config.security import get_current_active_user
 from backend.src.util.db import get_db
 from backend.src.config.dependencies import get_current_moderator, get_current_admin
@@ -21,7 +20,7 @@ async def create_photo(
     description: str = Form(None),
     tags: str = Form(""),
     file: UploadFile = File(...),
-    current_user: user.User = Depends(get_current_active_user),
+    current_user: schema_user.User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     # Upload file to Cloudinary
@@ -55,7 +54,7 @@ def update_photo(
     photo_id: int,
     photo: schema_photo.PhotoCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: model_user.User = Depends(get_current_active_user)
 ):
     db_photo = crud_photo.get_photo(db, photo_id)
     if db_photo is None:
@@ -68,7 +67,7 @@ def update_photo(
 def delete_photo(
     photo_id: int,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: model_user.User = Depends(get_current_active_user)
 ):
     db_photo = crud_photo.get_photo(db, photo_id)
     if db_photo is None:
@@ -83,7 +82,7 @@ def transform_photo(
     transformation: str,
     db: Session = Depends(get_db)
 ):
-    db_photo = db.query(models.Photo).filter(models.Photo.id == photo_id).first()
+    db_photo = db.query(model_photo.Photo).filter(model_photo.Photo.id == photo_id).first()
     if not db_photo:
         raise HTTPException(status_code=404, detail="Photo not found")
 

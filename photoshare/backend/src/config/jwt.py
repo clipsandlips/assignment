@@ -9,8 +9,8 @@ from backend.src.util.schemas import user
 from backend.src.util.db import SessionLocal
 from backend.src.config.config import settings
 from typing import Optional
-from backend.src.util.crud import user
-from backend.src.util.models import models
+from backend.src.util.crud import user as crud_user
+from backend.src.util.models import user as model_user
 
 from datetime import datetime, timedelta
 from jose import JWTError, jwt

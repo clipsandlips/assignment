@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from src.routes import auth, user, photo, comment, tag, rating
 from src.util.db import engine  #, Base
 #from src.util.models import models
-from src.util.models.models import Base
+from backend.src.util.models.base import Base
 
 import cloudinary
 from src.config.config import settings

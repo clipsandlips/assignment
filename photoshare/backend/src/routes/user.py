@@ -3,12 +3,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from sqlalchemy.orm import Session
 from backend.src.util.schemas import user as schema_user
-from backend.src.util.models import models
+from backend.src.util.models import user as model_user
 from backend.src.util.crud import user as crud_user
-
-
-#from backend.src.config import auth 
-#sfrom backend.src.config.auth import get_current_active_user, get_password_hash, create_access_token
 from backend.src.config.dependencies import get_current_admin
 from backend.src.util.db import get_db
 from backend.src.util import db

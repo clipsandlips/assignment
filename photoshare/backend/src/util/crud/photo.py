@@ -1,7 +1,7 @@
 import bcrypt
 from sqlalchemy.orm import Session
 from backend.src.util.schemas import photo as schema_photo
-from backend.src.util.models import models
+from backend.src.util.models import photo as model_photo, tag as model_tag
 
 dbg = True
 
@@ -9,7 +9,7 @@ dbg = True
 
 def create_photo(db: Session, photo: schema_photo.PhotoCreate, user_id: int):
     print('create_photo')
-    db_photo = models.Photo(
+    db_photo = model_photo.Photo(
         url=photo.url,
         description=photo.description,
         owner_id=user_id
@@ -24,9 +24,9 @@ def create_photo(db: Session, photo: schema_photo.PhotoCreate, user_id: int):
 
     for tag_create in photo.tags or []:
         tag_name = tag_create.name  # Access the tag name from TagCreate
-        db_tag = db.query(models.Tag).filter(models.Tag.name == tag_name).first()
+        db_tag = db.query(model_photo.Tag).filter(model_tag.Tag.name == tag_name).first()
         if not db_tag:
-            db_tag = models.Tag(name=tag_name)
+            db_tag = model_photo.Tag(name=tag_name)
             db.add(db_tag)
             db.commit()
             db.refresh(db_tag)
@@ -49,7 +49,7 @@ def create_photo(db: Session, photo: schema_photo.PhotoCreate, user_id: int):
 
 def get_photo(db: Session, photo_id: int):
     if dbg: print('get_photo')
-    db_photo = db.query(models.Photo).filter(models.Photo.id == photo_id).first()
+    db_photo = db.query(model_photo.Photo).filter(model_photo.Photo.id == photo_id).first()
     if not db_photo:
         return None
 
@@ -68,7 +68,7 @@ def get_photo(db: Session, photo_id: int):
 def update_photo(db: Session, photo_id: int, photo_update: schema_photo.PhotoCreate):
     if dbg: print('update_photo')
 
-    db_photo = db.query(models.Photo).filter(models.Photo.id == photo_id).first()
+    db_photo = db.query(model_photo.Photo).filter(model_photo.Photo.id == photo_id).first()
     if not db_photo:
         return None
 
@@ -81,9 +81,9 @@ def update_photo(db: Session, photo_id: int, photo_update: schema_photo.PhotoCre
     # Add new tags
     for tag_create in photo_update.tags or []:
         tag_name = tag_create.name
-        db_tag = db.query(models.Tag).filter(models.Tag.name == tag_name).first()
+        db_tag = db.query(model_tag.Tag).filter(model_tag.Tag.name == tag_name).first()
         if not db_tag:
-            db_tag = models.Tag(name=tag_name)
+            db_tag = model_tag.Tag(name=tag_name)
             db.add(db_tag)
             db.commit()
             db.refresh(db_tag)
@@ -106,14 +106,14 @@ def update_photo(db: Session, photo_id: int, photo_update: schema_photo.PhotoCre
 def delete_photo(db: Session, photo_id: int):
     if dbg: print('delete_photo')
     if dbg: print('photo_id : {}'.format(photo_id))
-    db_photo = db.query(models.Photo).filter(models.Photo.id == photo_id).first()
+    db_photo = db.query(model_photo.Photo).filter(model_photo.Photo.id == photo_id).first()
     if db_photo:
         db.delete(db_photo)
         db.commit()
 
 
 
-def transform_photo(db: Session, db_photo: models.Photo, transformation: str) -> schema_photo.Photo:
+def transform_photo(db: Session, db_photo: model_photo.Photo, transformation: str) -> schema_photo.Photo:
     if transformation == "scale":
         # Example transformation logic
         db_photo.url += "?transformation=scale"
