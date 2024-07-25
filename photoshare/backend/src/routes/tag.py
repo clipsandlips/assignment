@@ -10,7 +10,7 @@ from backend.src.config.dependencies import get_current_moderator
 router = APIRouter()
 
 @router.get("/tags/", response_model=list[schema_tag.Tag])
-def read_tags(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def read_tags(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     tags = crud_tag.get_tags(db, skip=skip, limit=limit)
     return tags
 

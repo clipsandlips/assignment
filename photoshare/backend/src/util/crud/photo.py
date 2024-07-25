@@ -9,6 +9,10 @@ dbg = True
 
 def create_photo(db: Session, photo: schema_photo.PhotoCreate, user_id: int):
     print('create_photo')
+
+    if len(photo.tags) > 5:
+        raise ValueError('A photo cannot have more than 5 tags.')
+
     db_photo = model_photo.Photo(
         url=photo.url,
         description=photo.description,
@@ -24,9 +28,9 @@ def create_photo(db: Session, photo: schema_photo.PhotoCreate, user_id: int):
 
     for tag_create in photo.tags or []:
         tag_name = tag_create.name  # Access the tag name from TagCreate
-        db_tag = db.query(model_photo.Tag).filter(model_tag.Tag.name == tag_name).first()
+        db_tag = db.query(model_tag.Tag).filter(model_tag.Tag.name == tag_name).first()
         if not db_tag:
-            db_tag = model_photo.Tag(name=tag_name)
+            db_tag = model_tag.Tag(name=tag_name)
             db.add(db_tag)
             db.commit()
             db.refresh(db_tag)
@@ -67,6 +71,10 @@ def get_photo(db: Session, photo_id: int):
 
 def update_photo(db: Session, photo_id: int, photo_update: schema_photo.PhotoCreate):
     if dbg: print('update_photo')
+
+    if len(photo_update.tags) > 5:
+        raise ValueError('A photo cannot have more than 5 tags.')
+
 
     db_photo = db.query(model_photo.Photo).filter(model_photo.Photo.id == photo_id).first()
     if not db_photo:

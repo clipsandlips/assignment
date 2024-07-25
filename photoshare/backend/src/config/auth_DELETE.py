@@ -10,7 +10,7 @@ from backend.src.util.db import SessionLocal
 from backend.src.config.config import settings
 from typing import Optional
 from backend.src.util.crud import user
-from backend.src.util.models import models
+from backend.src.util.models import models_del
 
 SECRET_KEY = settings.JWT_SECRET_KEY
 ALGORITHM = settings.JWT_ALGORITHM
@@ -83,7 +83,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         raise credentials_exception
     return user
 
-async def get_current_active_user(current_user: models.User = Depends(get_current_user)):
+async def get_current_active_user(current_user: models_del.User = Depends(get_current_user)):
     print('get_current_active_user')
     print(current_user.email)
     if current_user.disabled:

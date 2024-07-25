@@ -42,7 +42,7 @@ async def create_photo(
 
 
 @router.get("/photos/{photo_id}", response_model=schema_photo.Photo)
-def read_photo(photo_id: int, db: Session = Depends(get_db)):
+async def read_photo(photo_id: int, db: Session = Depends(get_db)):
     photo = crud_photo.get_photo(db, photo_id)
     if photo is None:
         raise HTTPException(status_code=404, detail="Photo not found")
@@ -50,7 +50,7 @@ def read_photo(photo_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/photos/{photo_id}", response_model=schema_photo.Photo)
-def update_photo(
+async def update_photo(
     photo_id: int,
     photo: schema_photo.PhotoCreate,
     db: Session = Depends(get_db),
@@ -64,7 +64,7 @@ def update_photo(
     return crud_photo.update_photo(db, photo_id, photo)
 
 @router.delete("/photos/{photo_id}", status_code=204)
-def delete_photo(
+async def delete_photo(
     photo_id: int,
     db: Session = Depends(get_db),
     current_user: model_user.User = Depends(get_current_active_user)
@@ -77,7 +77,7 @@ def delete_photo(
     crud_photo.delete_photo(db, photo_id)
 
 @router.post("/photos/{photo_id}/transform", response_model=schema_photo.Photo)
-def transform_photo(
+async def transform_photo(
     photo_id: int,
     transformation: str,
     db: Session = Depends(get_db)
