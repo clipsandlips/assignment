@@ -20,10 +20,20 @@ router = APIRouter()
 
 @router.post("/signup", response_model=user_schemas.User)
 async def signup(user: user_schemas.UserCreate, db: Session = Depends(db.get_db)):
+    
     db_user = user_crud.get_user_by_email(db, email=user.email)
+    print(user.email, db_user)
+
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return user_crud.create_user(db=db, user=user)
+    
+    print('before create_user')
+    result = user_crud.create_user(db=db, user=user) 
+    print("result: {}".format(result))
+    return result
+
+
+
 
 @router.post("/login", response_model=user_schemas.Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(db.get_db)):
@@ -36,8 +46,9 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
         )
     access_token_expires = timedelta(minutes=jwt.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = jwt.create_access_token(
-        data={"sub": db_user.email}, expires_delta=access_token_expires
+        data={"sub": db_user.email},user_id=db_user.id, db=db, expires_delta=access_token_expires
     )
+    print('router : login')
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=user_schemas.User)
@@ -55,9 +66,12 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=jwt.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
+    #access_token = create_access_token(
+    #    data={"sub": user.email}, expires_delta=access_token_expires
+    #)
+    access_token = jwt.create_access_token(
+        data={"sub": user.email},user_id=user.id, db=db, expires_delta=access_token_expires
+    ) 
     return {"access_token": access_token, "token_type": "bearer"}
 
 

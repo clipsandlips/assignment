@@ -39,14 +39,19 @@ async def update_user(user_id: int, user: schema_user.UserUpdate, db: Session = 
 @router.delete("/{user_id}", response_model=schema_user.User)
 async def delete_user(user_id: int, db: Session = Depends(db.get_db), current_user: schema_user.User = Depends(security.get_current_user)):
     try:
-        print('delete_user')
         db_user = crud_user.get_user(db, user_id=user_id)
+        
         if db_user is None:
             raise HTTPException(status_code=404, detail="User not found")
         if db_user.id != current_user.id:
             raise HTTPException(status_code=403, detail="Not enough permissions")
-        crud_user.delete_user(db=db, user=db_user)
+        
+        crud_user.delete_user(db=db, user_id=db_user.id)
+
         return db_user
+    
     except Exception as e:
         print(f"An error occurred: {e}")  # Logging the error
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+

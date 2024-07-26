@@ -25,16 +25,29 @@ SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+def create_access_token(data: dict, user_id: int, db: Session, expires_delta: Optional[timedelta] = None):
     print('create_access_token')
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     print('token : {}'.format(encoded_jwt))
+
+    # Store the token in the tokens table
+    token = model_token.Token(
+        token=encoded_jwt,
+        user_id=user_id,
+        expires_at=expire
+    )
+    db.add(token)
+    db.commit()
+    db.refresh(token)
+    print('token refreshed')
+
     return encoded_jwt
 
 
@@ -58,3 +71,7 @@ def verify_token(token: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is blacklisted")
     
     return token_data
+
+
+
+

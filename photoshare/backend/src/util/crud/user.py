@@ -1,8 +1,10 @@
 import bcrypt
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.exc import NoResultFound
 from backend.src.util.schemas import user as schema_user
 from backend.src.util.models import user as model_user
-
+from backend.src.util.crud import token as crud_token
+from backend.src.config.jwt import create_access_token
 
 dbg = True
 
@@ -37,6 +39,22 @@ def create_user(db: Session, user: schema_user.UserCreate):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+
+    #access_token = create_access_token(data={"sub": db_user.email}, user_id=db_user.id, db=db)
+    
+    #return {"user": db_user, "access_token": access_token}
+
+    # Create access token for the new user
+    access_token = create_access_token(data={"sub": db_user.email}, user_id=db_user.id, db=db)
+    
+    # Prepare the response
+    #user_response = UserResponse(
+    #    id=db_user.id,
+    #    email=db_user.email,
+    #    role=db_user.role
+    #)
+    #return TokenResponse(user=user_response, access_token=access_token)
+
     return db_user
 
 def update_user(db: Session, user: model_user.User, user_update: schema_user.UserUpdate):
@@ -53,7 +71,31 @@ def update_user(db: Session, user: model_user.User, user_update: schema_user.Use
     return user
 
 
-def delete_user(db: Session, user: model_user.User):
-    if dbg: print('delete_user')
-    db.delete(user)
-    db.commit()
+#def delete_user(db: Session, user: model_user.User):
+#    if dbg: print('delete_user')
+#    db.delete(user)
+#    db.commit()
+
+
+
+def delete_user(db: Session, user_id: int):
+    print('crud: delete_user')
+    try:
+        user = db.query(model_user.User).filter(model_user.User.id == user_id).one()
+        print('user: {}'.format(user))
+        
+        active_tokens = crud_token.get_active_tokens_for_user(db, user_id) 
+        #print(active_tokens)
+
+        for token in active_tokens:
+            print('TEST token: {}'.format(token.token))
+            crud_token.add_token_to_blacklist(db, token.token)
+        
+        print('delete test')
+        db.delete(user)
+        db.commit()
+    except NoResultFound:
+        raise ValueError(f"User with id {user_id} does not exist")
+    
+
+

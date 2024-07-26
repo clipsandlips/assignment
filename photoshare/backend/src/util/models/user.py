@@ -12,3 +12,4 @@ class User(Base):
     role = Column(String)
 
     photos = relationship("Photo", back_populates="owner")
+    tokens = relationship("Token", back_populates="user", cascade="all, delete-orphan")
