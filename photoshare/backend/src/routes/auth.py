@@ -16,21 +16,21 @@ from ..config import security, jwt
 router = APIRouter()
 
 @router.post("/signup", response_model=user_schemas.User)
-async def signup(user: user_schemas.UserCreate, db: Session = Depends(db.get_db)):
+def signup(user: user_schemas.UserCreate, db: Session = Depends(db.get_db)):
     
-    db_user = await user_crud.get_user_by_email(db, email=user.email)
+    db_user =  user_crud.get_user_by_email(db, email=user.email)
 
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    result = await user_crud.create_user(db=db, user=user) 
+    result =  user_crud.create_user(db=db, user=user) 
     return result
 
 
 
 
 @router.post("/login", response_model=user_schemas.Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(db.get_db)):
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(db.get_db)):
     db_user = security.authenticate_user(db, email=form_data.username, password=form_data.password)
     if not db_user:
         raise HTTPException(
@@ -39,19 +39,20 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=jwt.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = await jwt.create_access_token(
+    access_token = jwt.create_access_token(
         data={"sub": db_user.email},user_id=db_user.id, db=db, expires_delta=access_token_expires
     )
     #print('router : login')
     return {"access_token": access_token, "token_type": "bearer"}
 
+
 @router.get("/me", response_model=user_schemas.User)
-async def read_users_me(current_user: user_schemas.User = Depends(security.get_current_user)):
-    return await current_user
+def read_users_me(current_user: user_schemas.User = Depends(security.get_current_user)):
+    return current_user
 
 
 @router.post("/token", response_model=user_schemas.Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(db.get_db)):
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(db.get_db)):
     user = security.authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -61,13 +62,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         )
     access_token_expires = timedelta(minutes=jwt.ACCESS_TOKEN_EXPIRE_MINUTES)
 
-    access_token = await jwt.create_access_token(
+    access_token = jwt.create_access_token(
         data={"sub": user.email},user_id=user.id, db=db, expires_delta=access_token_expires
     ) 
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/logout")
-async def logout(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token")), db: Session = Depends(get_db)):
-    await crud_token.add_token_to_blacklist(db, token)
+def logout(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token")), db: Session = Depends(get_db)):
+    crud_token.add_token_to_blacklist(db, token)
     return {"msg": "Successfully logged out"}

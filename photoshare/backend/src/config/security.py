@@ -59,7 +59,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         raise credentials_exception
     
     try:
-        user = await crud_user.get_user_by_email(db, email=token_data.email)
+        user = crud_user.get_user_by_email(db, email=token_data.email)
         #print(user.email)
     except Exception as e:
         print(f"An error occurred: {e}")  # Logging the error
@@ -73,6 +73,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
 async def get_current_active_user(current_user: model_user.User = Depends(get_current_user)):
     #print('get_current_active_user')
     #print(current_user.email)
-    if await current_user.disabled:
+    if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

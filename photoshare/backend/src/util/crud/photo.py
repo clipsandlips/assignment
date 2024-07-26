@@ -102,6 +102,8 @@ def update_photo(db: Session, photo_id: int, photo_update: schema_photo.PhotoCre
     return response_photo
 
 def delete_photo(db: Session, photo_id: int):
+    #if dbg: print('delete_photo')
+    #if dbg: print('photo_id : {}'.format(photo_id))
     db_photo = db.query(model_photo.Photo).filter(model_photo.Photo.id == photo_id).first()
     if db_photo:
         db.delete(db_photo)
