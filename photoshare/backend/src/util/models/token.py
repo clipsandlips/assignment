@@ -25,3 +25,7 @@ class Token(Base):
     expires_at = Column(DateTime, default=lambda: dt.utcnow() + timedelta(minutes=30))
 
     user = relationship("User", back_populates="tokens")
+
+
+
+    

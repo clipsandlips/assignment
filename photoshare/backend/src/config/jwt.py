@@ -26,7 +26,7 @@ ALGORITHM = settings.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 def create_access_token(data: dict, user_id: int, db: Session, expires_delta: Optional[timedelta] = None):
-    print('create_access_token')
+    #print('create_access_token')
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -35,7 +35,7 @@ def create_access_token(data: dict, user_id: int, db: Session, expires_delta: Op
 
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    print('token : {}'.format(encoded_jwt))
+    #print('token : {}'.format(encoded_jwt))
 
     # Store the token in the tokens table
     token = model_token.Token(
@@ -46,7 +46,7 @@ def create_access_token(data: dict, user_id: int, db: Session, expires_delta: Op
     db.add(token)
     db.commit()
     db.refresh(token)
-    print('token refreshed')
+    #print('token refreshed')
 
     return encoded_jwt
 

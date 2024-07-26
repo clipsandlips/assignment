@@ -3,13 +3,9 @@ from sqlalchemy.orm import Session
 from backend.src.util.schemas import photo as schema_photo
 from backend.src.util.models import photo as model_photo, tag as model_tag
 
-dbg = True
-
-
 
 def create_photo(db: Session, photo: schema_photo.PhotoCreate, user_id: int):
-    print('create_photo')
-
+    
     if len(photo.tags) > 5:
         raise ValueError('A photo cannot have more than 5 tags.')
 
@@ -22,9 +18,7 @@ def create_photo(db: Session, photo: schema_photo.PhotoCreate, user_id: int):
     db.commit()
     db.refresh(db_photo)
 
-    print('commit test')
-
-    print(photo.tags)
+    #print(photo.tags)
 
     for tag_create in photo.tags or []:
         tag_name = tag_create.name  # Access the tag name from TagCreate
@@ -46,13 +40,11 @@ def create_photo(db: Session, photo: schema_photo.PhotoCreate, user_id: int):
         tags=[tag.name for tag in db_photo.tags]
     )
 
-    print('crate_photo completed')
     return response_photo
 
 
 
 def get_photo(db: Session, photo_id: int):
-    if dbg: print('get_photo')
     db_photo = db.query(model_photo.Photo).filter(model_photo.Photo.id == photo_id).first()
     if not db_photo:
         return None
@@ -70,7 +62,6 @@ def get_photo(db: Session, photo_id: int):
 
 
 def update_photo(db: Session, photo_id: int, photo_update: schema_photo.PhotoCreate):
-    if dbg: print('update_photo')
 
     if len(photo_update.tags) > 5:
         raise ValueError('A photo cannot have more than 5 tags.')
@@ -108,12 +99,9 @@ def update_photo(db: Session, photo_id: int, photo_update: schema_photo.PhotoCre
         tags=[tag.name for tag in db_photo.tags]
     )
 
-    print('update_photo completed')
     return response_photo
 
 def delete_photo(db: Session, photo_id: int):
-    if dbg: print('delete_photo')
-    if dbg: print('photo_id : {}'.format(photo_id))
     db_photo = db.query(model_photo.Photo).filter(model_photo.Photo.id == photo_id).first()
     if db_photo:
         db.delete(db_photo)

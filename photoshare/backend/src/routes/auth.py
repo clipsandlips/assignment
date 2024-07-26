@@ -1,13 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-#from src.util.schemas.user import UserCreate, User
 from src.config import security
 from src.config.jwt import create_access_token
 from src.util import db
 from src.util.db import get_db
-#from src.util.models.user import User as UserModel
-#from src.util.crud.user import get_user_by_username, create_user
 
 from datetime import timedelta
 
@@ -21,15 +18,12 @@ router = APIRouter()
 @router.post("/signup", response_model=user_schemas.User)
 async def signup(user: user_schemas.UserCreate, db: Session = Depends(db.get_db)):
     
-    db_user = user_crud.get_user_by_email(db, email=user.email)
-    print(user.email, db_user)
+    db_user = await user_crud.get_user_by_email(db, email=user.email)
 
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    print('before create_user')
-    result = user_crud.create_user(db=db, user=user) 
-    print("result: {}".format(result))
+    result = await user_crud.create_user(db=db, user=user) 
     return result
 
 
@@ -45,15 +39,15 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=jwt.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = jwt.create_access_token(
+    access_token = await jwt.create_access_token(
         data={"sub": db_user.email},user_id=db_user.id, db=db, expires_delta=access_token_expires
     )
-    print('router : login')
+    #print('router : login')
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=user_schemas.User)
 async def read_users_me(current_user: user_schemas.User = Depends(security.get_current_user)):
-    return current_user
+    return await current_user
 
 
 @router.post("/token", response_model=user_schemas.Token)
@@ -66,10 +60,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=jwt.ACCESS_TOKEN_EXPIRE_MINUTES)
-    #access_token = create_access_token(
-    #    data={"sub": user.email}, expires_delta=access_token_expires
-    #)
-    access_token = jwt.create_access_token(
+
+    access_token = await jwt.create_access_token(
         data={"sub": user.email},user_id=user.id, db=db, expires_delta=access_token_expires
     ) 
     return {"access_token": access_token, "token_type": "bearer"}
@@ -77,5 +69,5 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 @router.post("/logout")
 async def logout(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token")), db: Session = Depends(get_db)):
-    crud_token.add_token_to_blacklist(db, token)
+    await crud_token.add_token_to_blacklist(db, token)
     return {"msg": "Successfully logged out"}

@@ -14,8 +14,6 @@ class BlacklistedToken(BaseModel):
     token: str
     blacklisted_on: datetime
 
-
-
 class UserBase(BaseModel):
     email: str
 

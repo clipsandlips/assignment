@@ -8,8 +8,8 @@ from src.util.db import SessionLocal
 
 
 def add_token_to_blacklist(db: Session, token: str):
-    print('add_token_to_blaclist')
-    print('toke::: {}'.format(token))
+    #print('add_token_to_blaclist')
+    #print('toke::: {}'.format(token))
     
     blacklisted_token = BlacklistedToken(token=token)
     db.add(blacklisted_token)

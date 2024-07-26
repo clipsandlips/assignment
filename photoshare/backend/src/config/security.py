@@ -23,15 +23,15 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def verify_password(plain_password, hashed_password):
-    print('verify_password')
+    #print('verify_password')
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password):
-    print('get_password_hash')
+    #print('get_password_hash')
     return pwd_context.hash(password)
 
 def authenticate_user(db: Session, email: str, password: str):
-    print('authenticate_user')
+    #print('authenticate_user')
     user = crud_user.get_user_by_email(db, email)
     if not user:
         return False
@@ -41,7 +41,7 @@ def authenticate_user(db: Session, email: str, password: str):
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    print('security get_current_user')
+    #print('security get_current_user')
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -53,14 +53,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         if email is None:
             raise credentials_exception
         token_data = schema_user.TokenData(email=email)
-        print('token : {}'.format(token_data))
+        #print('token : {}'.format(token_data))
 
     except JWTError:
         raise credentials_exception
     
     try:
-        user = crud_user.get_user_by_email(db, email=token_data.email)
-        print(user.email)
+        user = await crud_user.get_user_by_email(db, email=token_data.email)
+        #print(user.email)
     except Exception as e:
         print(f"An error occurred: {e}")  # Logging the error
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -71,8 +71,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     return user
 
 async def get_current_active_user(current_user: model_user.User = Depends(get_current_user)):
-    print('get_current_active_user')
-    print(current_user.email)
-    if current_user.disabled:
+    #print('get_current_active_user')
+    #print(current_user.email)
+    if await current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
