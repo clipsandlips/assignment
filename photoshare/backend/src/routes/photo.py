@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from backend.src.util.schemas import photo as schema_photo, user as schema_user, tag as schema_tag
 from backend.src.util.models import photo as model_photo, user as model_user
 from backend.src.util.crud import photo as crud_photo
@@ -10,41 +11,75 @@ from backend.src.config.dependencies import role_required
 from typing import List, Optional
 import cloudinary
 import cloudinary.uploader
-
+from backend.src.util.logging_config import logger
 #import qrcode
 
 
 router = APIRouter()
 
+#@router.post("/photos/", response_model=schema_photo.Photo)
+#async def create_photo(
+#    description: str = Form(None),
+#    tags: str = Form(""),
+#    file: UploadFile = File(...),
+#    current_user: schema_user.User = Depends(get_current_active_user),
+#    db: Session = Depends(get_db)
+#):
+#    # Upload file to Cloudinary
+#    upload_result = cloudinary.uploader.upload(file.file)
+    
+#    # Convert comma-separated tags into a list of TagCreate objects
+#    tag_list = [tag.strip() for tag in tags.split(",")] if tags else []
+#    tags_objects = [schema_tag.TagCreate(name=tag) for tag in tag_list]
+    
+#    # Create PhotoCreate schema instance
+#    photo_in = schema_photo.PhotoCreate(
+#        url=upload_result["secure_url"], 
+#        description=description, 
+#        tags=tags_objects
+#    )
+    
+#    # Use CRUD function to create photo in the database
+#    return crud_photo.create_photo(db=db, photo=photo_in, user_id=current_user.id)
+
+
 @router.post("/photos/", response_model=schema_photo.Photo)
-def create_photo(
+async def create_photo(
     description: str = Form(None),
     tags: str = Form(""),
     file: UploadFile = File(...),
     current_user: schema_user.User = Depends(get_current_active_user),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     # Upload file to Cloudinary
+    logger.debug('start : upload')
     upload_result = cloudinary.uploader.upload(file.file)
+    logger.debug('end : upload')
     
     # Convert comma-separated tags into a list of TagCreate objects
     tag_list = [tag.strip() for tag in tags.split(",")] if tags else []
     tags_objects = [schema_tag.TagCreate(name=tag) for tag in tag_list]
     
     # Create PhotoCreate schema instance
+    logger.debug('start : schema_photo')
     photo_in = schema_photo.PhotoCreate(
         url=upload_result["secure_url"], 
         description=description, 
         tags=tags_objects
     )
+    logger.debug('end : schema_photo')
     
     # Use CRUD function to create photo in the database
-    return crud_photo.create_photo(db=db, photo=photo_in, user_id=current_user.id)
+    logger.debug('start : create_photo in database')
+    return await crud_photo.create_photo(db=db, photo=photo_in, user_id=current_user.id)
+
+
+
 
 
 @router.get("/photos/{photo_id}", response_model=schema_photo.Photo)
-def read_photo(photo_id: int, db: Session = Depends(get_db)):
-    photo = crud_photo.get_photo(db, photo_id)
+async def read_photo(photo_id: int, db: AsyncSession = Depends(get_db)):
+    photo = await crud_photo.get_photo(db, photo_id)
     if photo is None:
         raise HTTPException(status_code=404, detail="Photo not found")
     return photo
