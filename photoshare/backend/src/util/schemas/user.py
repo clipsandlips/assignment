@@ -16,8 +16,10 @@ class BlacklistedToken(BaseModel):
 
 class UserBase(BaseModel):
     email: str
+    disabled: bool
 
 class UserCreate(UserBase):
+    email: str
     password: str
     role: str
 
@@ -28,6 +30,7 @@ class UserUpdate(BaseModel):
 
 class User(UserBase):
     id: int
+    role: str
 
     class Config:
         from_attributes = True #orm_mode = True

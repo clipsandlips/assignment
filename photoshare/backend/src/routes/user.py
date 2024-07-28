@@ -33,27 +33,6 @@ async def read_user(user_id: int, db: AsyncSession = Depends(get_db)):
     return db_user
 
 
-
-#@router.put("/{user_id}", response_model=schema_user.User)
-#@role_required("admin", "moderator")
-#async def update_user(
-#    user_id: int,
-#    user: schema_user.UserUpdate,
-#    db: AsyncSession = Depends(get_db),
-##    current_user: schema_user.User = Depends(security.get_current_user)
-#):
-#    logger.debug('user - update_user - get_user')
-#    db_user = await crud_user.get_user(db, user_id=user_id)
-#    if db_user is None:
-#        raise HTTPException(status_code=404, detail="User not found")
-#    if db_user.id != current_user.id:
-#        raise HTTPException(status_code=403, detail="Not enough permissions")
-    
-#    logger.debug('user - update_user')
-#    updated_user = await crud_user.update_user(db=db, user=db_user, user_update=user)
-#    return updated_user
-
-
 @router.put("/{user_id}", response_model=schema_user.User)
 @role_required("admin", "moderator")
 async def update_user(
@@ -83,27 +62,6 @@ async def update_user(
 
 
 
-
-
-#@router.delete("/{user_id}", response_model=schema_user.User)
-#@role_required("admin")
-#def delete_user(user_id: int, db: Session = Depends(db.get_db), current_user: schema_user.User = Depends(security.get_current_user)):
-#    try:
-#        db_user = crud_user.get_user(db, user_id=user_id)
-        
-#        if db_user is None:
-#            raise HTTPException(status_code=404, detail="User not found")
-#        if db_user.id != current_user.id:
-#            raise HTTPException(status_code=403, detail="Not enough permissions")
-        
-#        crud_user.delete_user(db=db, user_id=db_user.id)
-
-#        return db_user
-    
-#    except Exception as e:
-#       print(f"An error occurred: {e}")  # Logging the error
-#        raise HTTPException(status_code=500, detail="Internal Server Error")
-    
 
 
 @router.delete("/{user_id}", response_model=schema_user.User)
